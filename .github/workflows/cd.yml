@@ -73,7 +73,7 @@ jobs:
           grep -n "image:" release/deployment.yaml
 
       - name: Upload deployment bundle
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: staging-kubernetes-manifests
           path: release/
