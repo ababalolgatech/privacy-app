@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: privacy-devsecops-demo
+  labels:
+    app: privacy-devsecops-demo
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: privacy-devsecops-demo
+  template:
+    metadata:
+      labels:
+        app: privacy-devsecops-demo
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: api
+          image: ghcr.io/REPLACE_ME/privacy-devsecops-demo:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8000
+          env:
+            - name: APP_ENV
+              value: production
+            - name: DEMO_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: privacy-demo-secrets
+                  key: api-key
+            - name: TOKENIZATION_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: privacy-demo-secrets
+                  key: tokenization-key
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 10001
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          livenessProbe:
+            httpGet:
+              path: /health/live
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 2
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: http
+            initialDelaySeconds: 2
+            periodSeconds: 5
+            timeoutSeconds: 2
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 250m
+              memory: 256Mi
