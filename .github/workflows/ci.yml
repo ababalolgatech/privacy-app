@@ -39,14 +39,14 @@ jobs:
       # Runs the application's automated functional/privacy tests.
       # ---------------------------------------------------------
       - name: 3. Unit Tests
-        run: pytest -q
+        run: python -m pytest -q
 
       # ---------------------------------------------------------
       # 4. COVERAGE
       # Confirms that tests execute a useful portion of app code.
       # ---------------------------------------------------------
       - name: 4. Coverage
-        run: pytest --cov=app --cov-report=term-missing --cov-fail-under=80
+        run: python -m pytest --cov=app --cov-report=term-missing --cov-fail-under=80
 
       # ---------------------------------------------------------
       # 5. SAST
