@@ -67,7 +67,7 @@ jobs:
       # Trivy scans the repository for accidentally committed secrets.
       # ---------------------------------------------------------
       - name: 7. Secret Scan
-        uses: aquasecurity/trivy-action@0.28.0
+        uses: aquasecurity/trivy-action@v0.28.0
         with:
           scan-type: fs
           scan-ref: .
@@ -87,7 +87,7 @@ jobs:
       # Trivy checks the Kubernetes YAML for misconfigurations.
       # ---------------------------------------------------------
       - name: 9. IaC Scan
-        uses: aquasecurity/trivy-action@0.28.0
+        uses: aquasecurity/trivy-action@v0.28.0
         with:
           scan-type: config
           scan-ref: k8s
