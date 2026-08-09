@@ -1,12 +1,15 @@
 apiVersion: v1
 kind: Service
+
 metadata:
-  name: privacy-devsecops-demo
+  name: beginner-privacy-api-service
+
 spec:
   selector:
-    app: privacy-devsecops-demo
+    app: beginner-privacy-api
+
   ports:
-    - name: http
-      port: 80
-      targetPort: http
+    - port: 80
+      targetPort: 8000
+
   type: ClusterIP

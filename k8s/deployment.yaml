@@ -1,68 +1,46 @@
 apiVersion: apps/v1
 kind: Deployment
+
 metadata:
-  name: privacy-devsecops-demo
-  labels:
-    app: privacy-devsecops-demo
+  name: beginner-privacy-api
+
 spec:
   replicas: 2
+
   selector:
     matchLabels:
-      app: privacy-devsecops-demo
+      app: beginner-privacy-api
+
   template:
     metadata:
       labels:
-        app: privacy-devsecops-demo
+        app: beginner-privacy-api
+
     spec:
-      automountServiceAccountToken: false
-      securityContext:
-        seccompProfile:
-          type: RuntimeDefault
       containers:
         - name: api
-          image: ghcr.io/REPLACE_ME/privacy-devsecops-demo:latest
-          imagePullPolicy: IfNotPresent
+          image: beginner-privacy-api:latest
+
           ports:
-            - name: http
-              containerPort: 8000
+            - containerPort: 8000
+
           env:
-            - name: APP_ENV
-              value: production
-            - name: DEMO_API_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: privacy-demo-secrets
-                  key: api-key
-            - name: TOKENIZATION_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: privacy-demo-secrets
-                  key: tokenization-key
-          securityContext:
-            runAsNonRoot: true
-            runAsUser: 10001
-            allowPrivilegeEscalation: false
-            readOnlyRootFilesystem: true
-            capabilities:
-              drop: ["ALL"]
-          livenessProbe:
-            httpGet:
-              path: /health/live
-              port: http
-            initialDelaySeconds: 5
-            periodSeconds: 10
-            timeoutSeconds: 2
+            - name: APP_API_KEY
+              value: "demo-key"
+
+            - name: TOKENIZATION_SECRET
+              value: "demo-secret"
+
           readinessProbe:
             httpGet:
-              path: /health/ready
-              port: http
-            initialDelaySeconds: 2
-            periodSeconds: 5
-            timeoutSeconds: 2
-          resources:
-            requests:
-              cpu: 50m
-              memory: 64Mi
-            limits:
-              cpu: 250m
-              memory: 256Mi
+              path: /health
+              port: 8000
+            initialDelaySeconds: 3
+            periodSeconds: 10
+
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 15
